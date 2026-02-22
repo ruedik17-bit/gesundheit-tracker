@@ -17,14 +17,17 @@ def to_float(x):
 
 @st.cache_resource
 def get_sheets():
-    sa_info = dict(st.secrets["gcp_service_account"])
+    import json
+
+    sa_info = json.loads(st.secrets["gcp_service_account"])
+    sa_info["private_key"] = sa_info["private_key"].replace("\\n", "\n")
     scopes = [
         "https://www.googleapis.com/auth/spreadsheets",
         "https://www.googleapis.com/auth/drive",
     ]
     creds = Credentials.from_service_account_info(sa_info, scopes=scopes)
     gc = gspread.authorize(creds)
-    sh = gc.open(st.secrets["app"]["sheet_name"])
+    sh = gc.open_by_key(st.secrets["1WfXRyq7wy3wzweA_EyJF5Dy94OT2ZiXoSn8jYX6dhsI"])
     return {
         "weight": sh.worksheet("weight"),
         "nutrition": sh.worksheet("nutrition"),
